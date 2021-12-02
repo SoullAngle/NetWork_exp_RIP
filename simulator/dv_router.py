@@ -152,6 +152,21 @@ class DVRouter(DVRouterBase):
         :param port: the port that the advertisement arrived on.
         :return: nothing.
         """
+        #正确的修正延时和过期时间
+        # print(self.table)
+        new_table = TableEntry(dst=route_dst, port=port, latency=route_latency+self.ports.get_latency(port), expire_time=api.current_time()+self.ROUTE_TTL)
+        # print("new_table: ", new_table)
+        if not self.table.get(route_dst): #不在表里
+            self.table[route_dst] = new_table
+        else: #在表里比较延迟
+            entry = self.table[route_dst]
+            if entry[3]<=0: #过期，更新
+                self.table[route_dst] = new_table
+            if new_table[2] < entry[2]: #比较cost
+                self.table[route_dst] = new_table
+            if new_table[1] == entry[1]: #同一个端口问题
+                self.table[route_dst] = new_table
+
         # TODO: fill this in!
 
     def handle_link_up(self, port, latency):
