@@ -1,0 +1,16 @@
+==========================example hub=============================================
+
+python simulator.py --start --default-switch-type=examples.hub topos.linear --n=3
+
+python simulator.py --start --default-switch-type=examples.hub topos.candy
+
+python simulator.py --start --default-switch-type=examples.hub topos.rand --switches=4 --links=3 --hosts=4
+
+===========================dv_router===============================================
+python simulator.py --start --default-switch-type=dv_router topos.candy
+
+python simulator.py --start --default-switch-type=dv_router topos.linear --n=3
+
+
+=============================test================================================
+python dv_unit_tests.py 1
