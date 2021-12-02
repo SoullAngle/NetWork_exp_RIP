@@ -88,25 +88,35 @@ class DVRouter(DVRouterBase):
         """
         #=================stage 2================================
         #update Table （利用上一个函数）
-        self.add_static_route(packet.src, in_port)
+        # self.add_static_route(packet.src, in_port)
         #查表
         #table 包含了每个host及其所在的端口
         #table Entry 是个列表
+        #get latency一定注意，是表里的latency而不需要重新get一遍
         if packet.dst in self.table:
             port = self.table[packet.dst][1]
-            self.send(packet=packet, port=port) 
-            return 
-        #剩余端口全发
+            ltcy=self.table[packet.dst][2] 
+            print(ltcy)
+            if ltcy<INFINITY:
+                self.send(packet=packet, port=port) 
+                return 
+
+        #排除不发的port
         all_ports = self.ports.get_all_ports()
-        not_send_ports = [] #根据Table获得所有不发送的表
+        not_send_ports = [] #根据Table获得所有不发送的port
         for host, entry in self.table.items():
             port = entry[1]   #get port
-            if host != packet.dst:
-                not_send_ports.append(port)
+            not_send_ports.append(port)
+        
+        #剩余端口全发
         for i in all_ports:   #ports i
             if i in not_send_ports or i==in_port:
                 continue
             else:
+                #检查一下延时，如果超过INF，也不发
+                ltcy=self.table[packet.dst][2] #get latency
+                if ltcy>=INFINITY:
+                    continue
                 self.send(packet=packet, port=i)
 
 

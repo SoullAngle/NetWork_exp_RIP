@@ -4,6 +4,7 @@
 ==========stage 2=================
 算法思路：
 收到数据包后
-1. 更新表（src） Table
+1. 更新表（src） Table  （不需要）
 2. 查表，如果在表里有，直接发送；
 3. 否则，向其余Router发送。
+注意：Latency是表里的Latency，而不是接着get_latency
