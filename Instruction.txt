@@ -8,3 +8,7 @@
 2. 查表，如果在表里有，直接发送；
 3. 否则，向其余Router发送。
 注意：Latency是表里的Latency，而不是接着get_latency
+
+============stage 3===============
+class TableEntry (namedtuple("TableEntry",
+                             ["dst", "port", "latency", "expire_time"])):

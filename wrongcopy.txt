@@ -1,0 +1,15 @@
+==================stage 3================================
+        all_ports = self.ports.get_all_ports()
+        host_ports = [] #根据Table获得所有host port
+        for host, entry in self.table.items():
+            port = entry[1]   #get port
+            host_ports.append(port)
+        #all_ports - host ports = Router ports
+        for i in all_ports:
+            if i in host_ports:
+                continue
+            ltcy = self.ports.get_latency(i)
+            pkt = RoutePacket(i, ltcy)
+            self.send(packet=pkt, port=i)
+
+===================stage 4=================================

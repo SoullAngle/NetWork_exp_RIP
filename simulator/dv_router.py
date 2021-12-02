@@ -96,7 +96,7 @@ class DVRouter(DVRouterBase):
         if packet.dst in self.table:
             port = self.table[packet.dst][1]
             ltcy=self.table[packet.dst][2] 
-            print(ltcy)
+            # print(ltcy)
             if ltcy<INFINITY:
                 self.send(packet=packet, port=port) 
                 return 
@@ -118,9 +118,6 @@ class DVRouter(DVRouterBase):
                 if ltcy>=INFINITY:
                     continue
                 self.send(packet=packet, port=i)
-
-
-
         # TODO: fill this in!
 
     def send_routes(self, force=False, single_port=None):
@@ -134,6 +131,9 @@ class DVRouter(DVRouterBase):
                             be used in conjunction with handle_link_up.
         :return: nothing.
         """
+        for host, entry in self.table.items():
+            pkt = RoutePacket(destination=host, latency=entry[2])
+            self.send(packet=pkt, flood=True)
         # TODO: fill this in!
 
     def expire_routes(self):
