@@ -149,7 +149,7 @@ class DVRouter(DVRouterBase):
             self.table[route_dst] = new_table
         else: #在表里比较延迟
             entry = self.table[route_dst]
-            if entry[3]<=0: #过期，更新
+            if api.current_time() >= entry[3]: #过期，更新(其实用不上)
                 self.table[route_dst] = new_table
             if new_table[2] < entry[2]: #比较cost
                 self.table[route_dst] = new_table

@@ -1,0 +1,4 @@
+task:
+1. 读懂程序；
+2. 在ReadMe.md中写完Router、Table、Port、Packet的方法（在文档和sim/dv.py文件里有）
+3. 自定义拓扑结构并进行测试

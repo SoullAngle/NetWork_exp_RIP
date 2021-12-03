@@ -14,3 +14,7 @@ python simulator.py --start --default-switch-type=dv_router topos.linear --n=3
 
 =============================test================================================
 python dv_unit_tests.py 1
+python dv_unit_tests.py 2
+python dv_unit_tests.py 3
+python dv_unit_tests.py 4
+python dv_unit_tests.py 5
