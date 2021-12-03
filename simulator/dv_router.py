@@ -89,7 +89,7 @@ class DVRouter(DVRouterBase):
         #=================stage 2================================
         #update Table （利用上一个函数）
         # self.add_static_route(packet.src, in_port)
-        #查表
+        #查表，如果在表里，而且延时符合条件，则发送
         #table 包含了每个host及其所在的端口
         #table Entry 是个列表
         #get latency一定注意，是表里的latency而不需要重新get一遍
@@ -99,25 +99,6 @@ class DVRouter(DVRouterBase):
             # print(ltcy)
             if ltcy<INFINITY:
                 self.send(packet=packet, port=port) 
-                return 
-
-        #排除不发的port
-        all_ports = self.ports.get_all_ports()
-        not_send_ports = [] #根据Table获得所有不发送的port
-        for host, entry in self.table.items():
-            port = entry[1]   #get port
-            not_send_ports.append(port)
-        
-        #剩余端口全发
-        for i in all_ports:   #ports i
-            if i in not_send_ports or i==in_port:
-                continue
-            else:
-                #检查一下延时，如果超过INF，也不发
-                ltcy=self.table[packet.dst][2] #get latency
-                if ltcy>=INFINITY:
-                    continue
-                self.send(packet=packet, port=i)
         # TODO: fill this in!
 
     def send_routes(self, force=False, single_port=None):
@@ -141,6 +122,14 @@ class DVRouter(DVRouterBase):
         Clears out expired routes from table.
         accordingly.
         """
+        #遍历查看过期条目并删除
+        to_del = []
+        for host, entry in self.table.items():
+            if api.current_time() > entry[3]: # time > expire_time为过期时间
+                to_del.append(host)
+        for i in to_del: 
+            self.table.pop(i)
+
         # TODO: fill this in!
 
     def handle_route_advertisement(self, route_dst, route_latency, port):
